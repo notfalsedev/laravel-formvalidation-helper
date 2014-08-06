@@ -6,6 +6,8 @@ use \Illuminate\Html\FormBuilder as LaravelFormBuilder;
 use \Illuminate\Session\Store as Session;
 use \Illuminate\Routing\UrlGenerator;
 use \Illuminate\Html\HtmlBuilder;
+use \Illuminate\Support\Facades\Input;
+use \Illuminate\Support\Facades\Validator;
 
 class FormBuilder extends LaravelFormBuilder {
 
@@ -49,8 +51,8 @@ class FormBuilder extends LaravelFormBuilder {
      */
     public function validate($callback)
     {
-        $postData  = \Input::get();
-        $validator = \Validator::make($postData,$this->getRequiredFields());
+        $postData  = Input::get();
+        $validator = Validator::make($postData,$this->getRequiredFields());
         $passes    = true;
         $messages  = [];
 
@@ -60,7 +62,7 @@ class FormBuilder extends LaravelFormBuilder {
             $passes   = false;
         }
 
-        return $callback($passes,$messages);
+        return $callback($postData,$passes,$messages);
     }
 
     /**

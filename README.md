@@ -11,7 +11,7 @@ Add `artisaninweb/laravel-formvalidation-helper` as requirement to composer.json
 ```javascript
 {
     "require": {
-        "artisaninweb/laravel-formvalidation-helper": "0.1"
+        "artisaninweb/laravel-formvalidation-helper": "0.1.*"
     }
 }
 ```
@@ -27,7 +27,7 @@ Add 2 parameters to the form attributes `required` and `rules`.
 
 ```php
 echo Form::open(['url' => '/contact']);
-echo Form::text('username','',array('required'=>true, 'rules' => 'required'));
+echo Form::text('username','',array('required' =>true, 'rules' => 'required'));
 echo Form::text('password','',array('required' => true, 'rules' => 'required'));
 echo Form::submit('Click Me!');
 echo Form::close();
@@ -36,7 +36,8 @@ echo Form::close();
 After a form submit you can validate the last submitted form.
 
 ```php
-Form::validate(function($passes,$messages){
+Form::validate(function($postData,$passes,$messages){
+    var_dump($postData);
     var_dump($passes);
     var_dump($messages);
 });
