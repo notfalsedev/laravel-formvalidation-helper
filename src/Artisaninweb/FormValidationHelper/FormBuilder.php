@@ -165,6 +165,7 @@ class FormBuilder extends LaravelFormBuilder {
             $this->requiredFields[$name] = $options['rules'];
 
             unset($options['required']);
+            unset($options['rules']);
         }
         return $options;
     }
