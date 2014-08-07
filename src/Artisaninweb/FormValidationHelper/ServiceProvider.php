@@ -2,7 +2,11 @@
 
 namespace Artisaninweb\FormValidationHelper;
 
-class ServiceProvider extends \Illuminate\Support\ServiceProvider {
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Artisaninweb\FormValidationHelper\FormBuilder;
+use Illuminate\Html\HtmlBuilder;
+
+class ServiceProvider extends LaravelServiceProvider {
 
     /**
      * Register the service provider.
@@ -13,12 +17,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider {
     {
         $this->app->bindShared('html', function ($app)
         {
-            return new \Illuminate\Html\HtmlBuilder($app['url']);
+            return new HtmlBuilder($app['url']);
         });
 
         $this->app->bindShared('form', function ($app)
         {
-            $form = new \Artisaninweb\FormValidationHelper\FormBuilder($app['html'],$app['url'],$app['session.store']);
+            $form = new FormBuilder($app['html'],$app['url'],$app['session.store']);
 
             return $form->setSessionStore($app['session.store']);
         });

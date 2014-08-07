@@ -2,12 +2,12 @@
 
 namespace Artisaninweb\FormValidationHelper;
 
-use \Illuminate\Html\FormBuilder as LaravelFormBuilder;
-use \Illuminate\Session\Store as Session;
-use \Illuminate\Routing\UrlGenerator;
-use \Illuminate\Html\HtmlBuilder;
-use \Illuminate\Support\Facades\Input;
-use \Illuminate\Support\Facades\Validator;
+use Illuminate\Html\FormBuilder as LaravelFormBuilder;
+use Illuminate\Session\Store as Session;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Html\HtmlBuilder;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 
 class FormBuilder extends LaravelFormBuilder {
 

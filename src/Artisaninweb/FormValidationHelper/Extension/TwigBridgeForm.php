@@ -3,11 +3,12 @@
 namespace Artisaninweb\FormValidationHelper\Extension;
 
 use Artisaninweb\FormValidationHelper\FormBuilder;
+use TwigBridge\Extension\Laravel\Form;
 
 /**
  * Access Laravels form builder in your Twig templates.
  */
-class TwigBridgeForm extends \TwigBridge\Extension\Laravel\Form {
+class TwigBridgeForm extends Form {
 
     /**
      * The constructor
