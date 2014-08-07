@@ -22,9 +22,8 @@ class ServiceProvider extends LaravelServiceProvider {
 
         $this->app->bindShared('form', function ($app)
         {
-            $form = new FormBuilder($app['html'],$app['url'],$app['session.store']);
-
-            return $form->setSessionStore($app['session.store']);
+            return (new FormBuilder($app['html'],$app['url'],$app['session.store']))
+                    ->setSessionStore($app['session.store']);
         });
     }
 
