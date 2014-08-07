@@ -22,6 +22,11 @@ class FormBuilder extends LaravelFormBuilder {
     protected $session;
 
     /**
+     * @var array
+     */
+    protected $errorFields;
+
+    /**
      * The constructor
      *
      * @param HtmlBuilder  $html
@@ -34,12 +39,20 @@ class FormBuilder extends LaravelFormBuilder {
 
         $this->session        = $session;
         $this->requiredFields = [];
+        $this->errorFields    = [];
 
         if($this->session->has('formhelper-required-fields'))
         {
             $this->requiredFields = $this->session->get('formhelper-required-fields');
 
             $this->session->forget('formhelper-required-fields');
+        }
+
+        if($this->session->has('formhelper-error-fields'))
+        {
+            $this->errorFields = $this->session->get('formhelper-error-fields');
+
+            $this->session->forget('formhelper-error-fields');
         }
     }
 
@@ -60,19 +73,11 @@ class FormBuilder extends LaravelFormBuilder {
         {
             $messages = $validator->messages();
             $passes   = false;
+
+            $this->session->put('formhelper-error-fields',$messages);
         }
 
         return $callback($postData,$passes,$messages);
-    }
-
-    /**
-     * Get all the required fields
-     *
-     * @return array
-     */
-    public function getRequiredFields()
-    {
-        return $this->requiredFields;
     }
 
     /**
@@ -86,7 +91,8 @@ class FormBuilder extends LaravelFormBuilder {
      */
     public function input($type,$name,$value=null,$options=array())
     {
-        $options = $this->checkRequired($name, $options);
+        $options = $this->addErrorClass($name,$options);
+        $options = $this->checkRequired($name,$options);
 
         return parent::input($type,$name,$value,$options);
     }
@@ -101,7 +107,8 @@ class FormBuilder extends LaravelFormBuilder {
      */
     public function textarea($name,$value=null,$options=array())
     {
-        $options = $this->checkRequired($name, $options);
+        $options = $this->addErrorClass($name,$options);
+        $options = $this->checkRequired($name,$options);
 
         return parent::textarea($name,$value,$options);
     }
@@ -117,7 +124,8 @@ class FormBuilder extends LaravelFormBuilder {
      */
     public function select($name,$list=array(),$selected=null,$options=array())
     {
-        $options = $this->checkRequired($name, $options);
+        $options = $this->addErrorClass($name,$options);
+        $options = $this->checkRequired($name,$options);
 
         return parent::select($name,$list,$selected,$options);
     }
@@ -135,6 +143,70 @@ class FormBuilder extends LaravelFormBuilder {
     }
 
     /**
+     * Get a error message
+     *
+     * @param        $name
+     * @param null   $customError
+     * @return null
+     */
+    public function error($name,$customError=null)
+    {
+        if($this->hasError($name))
+        {
+            if(null != $customError)
+            {
+                return $this->errorFields->first($name,$customError);
+            }
+            return '<span class="error-msg">'.$this->errorFields->first($name).'</span>';
+        }
+        return null;
+    }
+
+    /**
+     * Check if field has a error
+     *
+     * @param $name
+     * @return bool
+     */
+    protected function hasError($name)
+    {
+        if(!empty($this->errorFields))
+        {
+            $error = $this->errorFields->first($name);
+
+            if(!empty($error))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Add error class to the input/select/textarea/ect
+     *
+     * @param $name
+     * @param $options
+     * @return mixed
+     */
+    protected function addErrorClass($name,$options)
+    {
+        $errorClass = (!empty($options['error-class'])) ? $options['error-class'] : 'error' ;
+
+        if($this->hasError($name))
+        {
+            if(!empty($options['class']))
+            {
+                $options['class'] .= ' '. $errorClass;
+
+                return $options;
+            }
+            $options['class'] = $errorClass;
+        }
+        return $options;
+    }
+
+    /**
      * Create a checkable input field.
      *
      * @param  string $type
@@ -146,6 +218,7 @@ class FormBuilder extends LaravelFormBuilder {
      */
     protected function checkable($type,$name,$value,$checked,$options)
     {
+        $options = $this->addErrorClass($name,$options);
         $options = $this->checkRequired($name,$options);
 
         return parent::checkable($type,$name,$value,$checked,$options);
@@ -160,14 +233,25 @@ class FormBuilder extends LaravelFormBuilder {
      */
     protected function checkRequired($name,$options)
     {
-        if (!empty($options['required']) && $options['required'] && !empty($options['rules']))
+        if(!empty($options['required']) && $options['required'] && !empty($options['rules']))
         {
             $this->requiredFields[$name] = $options['rules'];
 
             unset($options['required']);
             unset($options['rules']);
+            unset($options['error-class']);
         }
         return $options;
+    }
+
+    /**
+     * Get all the required fields
+     *
+     * @return array
+     */
+    protected function getRequiredFields()
+    {
+        return $this->requiredFields;
     }
 
 }
