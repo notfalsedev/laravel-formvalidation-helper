@@ -18,7 +18,7 @@ Add `artisaninweb/laravel-formvalidation-helper` as requirement to composer.json
 
 Replace `'Illuminate\Html\HtmlServiceProvider'` with `'Artisaninweb\FormValidationHelper\ServiceProvider'`
 
-Replace in aliases `'Form' => 'Illuminate\Support\Facades\Form'` with `'Form' => 'Artisaninweb\FormValidationHelper\Facade'`
+Replace in aliases `'Form' => 'Illuminate\Support\Facades\Form'` with `'Form' => 'Artisaninweb\FormValidationHelper\Facades\Form'`
 
 Usage
 ============
